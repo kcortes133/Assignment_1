@@ -1,0 +1,14 @@
+read STRING file turn into dictionary where gene1{gene2: weight2, gene3:weight3....}
+
+read in string file
+organize string file into a list of lists split by '\n' and '\t'
+turn list of lists into a dictionary where list[-1]{list[1]: list[2]}
+
+read in input file delimited by '\t' and '\n' and get rid of first two columns
+
+iterate through gene list check if in string network
+remove genes if a hit
+continue
+
+so now have some list/dict of gene:gene:weight
+turn into cytoscape readable file
