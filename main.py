@@ -2,51 +2,63 @@
 # Date: September 9, 2021
 # Purpose: Take a tab delimited .gmz file of gene sets, a given tab-delimited STRING file
 #   create a sub network of the gene interactions from the input file using the STRING file
+#   output a SIR tab-delimited file for input to cytoscape
 
-# Press Shift+F10 to execute it or replace it with your code.
-# Press Double Shift to search everywhere for classes, files, tool windows, actions, and settings.
-import operator, json
+import operator
 from functools import reduce
-import ipycytoscape as cy
 
 #
-
 # assumptions:
 #   input is tab delimited
 #   first two indices in line should be thrown away
 #   gene in 'locus for gene' will be repeated in the list
 #   locus number is unimportant for network
 #   gene interactions should be examined across and within all gene sets
-
+#
 # limitations:
 #   gene interactions only shown if in STRING network
 #   only known gene interactions and given genes
-def readInput():
-    fileIn = 'Input.gmt.txt'
+#
+#   Returns a list of genes.
+#   Expects a .txt tab-delimited file as input.
+#   First two columns in file rows are discarded
+#
+#   @param fileIn file with genes to be read in
+#   @return genes list of genes to check interactions for
+def readInput(fileIn):
+    # read in GMT file
+    # separate file into list by tabs
     fI = open(fileIn, 'r')
     genes = fI.read().strip().split('\n')
     genes = [g.split('\t') for g in genes]
 
+    # Delete first two columns
     for g in genes:
         del g[0]
         del g[0]
 
-    genes = genes
+    # condense list of lists into one-dimensional list
     genes = reduce(operator.add, genes)
 
     return genes
 
 
 # assumptions:
-#   input is organized as protien'\t'protien'\t'weight'\n'
-#   protien1:protien2:weight is also represented in the list as protien2:protien1:weight
-
+#   input is organized as protein'\t'protein'\t'weight'\n'
+#   protein1:protein2:weight is also represented in the list as protein2:protein1:weight
+#
 #   limitations:
-#   dictionary wouldnt work if the protien:protien interaction was only represented once
-
+#   dictionary would not work if the protein:protein interaction was only represented once
+#
+#   Returns dictionary of protein interactions ordered protein:protein:weight
+#   Expects tab-delimited STRING file as input
+#
+#   @param   stringFile STRING file of protein-protein interactions
+#            organized as protein'\t'protein'\t'weight'\n'
+#   @returns interactions dict of protein interactions
 
 def makeInteractionNetwork(stringFile):
-    # dictionary of dictionary 1st protien : 2nd protien: weight
+    # dictionary of dictionary 1st protein : 2nd protein: weight
     interactions = {}
     with open(stringFile, 'r') as f:
         for w, i in enumerate(f):
@@ -58,6 +70,9 @@ def makeInteractionNetwork(stringFile):
     return interactions
 
 
+#   @param   genes list of genes to check interactions for (gotten from readInput(file))
+#   @param   interactionsNetwork dict of protein-protein interactions from makeInteractionNetwork(stringFile)
+#   @returns geneInteractions dict of gene interactions from input GMT file
 def makeNetwork(genes, interactionsNetwork):
     geneInteractions = {}
     genesTemp = list(genes)
@@ -68,39 +83,10 @@ def makeNetwork(genes, interactionsNetwork):
             if gene1 in interactionsNetwork:
                 if gene2 in interactionsNetwork[gene1]:
                     if gene2 in geneInteractions:
-                        # make sure not to duplicate
+                        # make sure not to duplicate edges
                         if gene1 not in geneInteractions[gene2]:
                             geneInteractions[gene1][gene2] = interactionsNetwork[gene1][gene2]
     return geneInteractions
-
-
-def makeNetworkJSON(geneInteractions, outFile):
-    cytoscapeData = {
-        'elements': {
-            'nodes': [
-
-            ],
-            'edges': [
-
-            ]
-        }
-
-    }
-
-    for gene in geneInteractions:
-        node = {'data': {'id': gene}}
-        cytoscapeData['elements']['nodes'].append(node)
-        for interaction in geneInteractions[gene]:
-            print(interaction)
-            weight = geneInteractions[gene][interaction]
-            edge = {'data': {'id': weight, 'source': gene, 'target': interaction}}
-            cytoscapeData['elements']['edges'].append(edge)
-    print(cytoscapeData)
-
-    with open(outFile, 'w') as out:
-        json.dump(cytoscapeData, out)
-
-    return
 
 
 # Assumptions:
@@ -110,32 +96,37 @@ def makeNetworkJSON(geneInteractions, outFile):
 #   SIF files dont give weight information beyone naming them with string
 #
 
+#   @param   geneInteractions dictionary of gene interactions generated from makeNetwork()
+#   @param   outF string file name to write gene interactions dictionary to
+#   @returns nothing
 def makeNetworkSIF(geneInteractions, outF):
     sifFile = open(outF, 'w')
     sifFile.write('Gene1' + '\t' + 'weight' + '\t' + 'Gene2' + '\n')
     countN = 0
 
     for gene in geneInteractions:
+        # if gene has no interactions write without edges
         if not geneInteractions[gene]:
             sifFile.write(gene + '\n')
             countN += 1
-        for interaction in geneInteractions[gene]:
-            weight = geneInteractions[gene][interaction]
-            # how to deal with duplicates
+        # otherwise write genes with interactions in same line
+        else:
+            for interaction in geneInteractions[gene]:
+                weight = geneInteractions[gene][interaction]
+                sifFile.write(gene + '\t' + weight +'\t' + interaction + '\n')
 
-            sifFile.write(gene + '\t' + weight +'\t' + interaction + '\n')
     sifFile.close()
-    print(countN)
 
     return
 
 
 def main():
     stringFile = 'STRING.txt'
-    genes = readInput()
-    interactionsNetwork = makeInteractionNetwork(stringFile)
-    geneInteractions = makeNetwork(genes, interactionsNetwork)
-    makeNetworkSIF(geneInteractions, 'outSIFTest.txt')
+    fileIn = 'Input.gmt.txt'
+    genes = readInput(fileIn)
+    #interactionsNetwork = makeInteractionNetwork(stringFile)
+    #geneInteractions = makeNetwork(genes, interactionsNetwork)
+    #makeNetworkSIF(geneInteractions, 'outSIFTest.txt')
 
 
 
