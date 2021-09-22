@@ -10,11 +10,13 @@ output network is all the genes from the Input GMT file using the STRING file to
 file can be loaded into Cytoscape as a network.
 
 ## INSTALL:
-operator
-reduce from functools
+python 3.9.5
 
 ## USAGE:
-python 3.9.5
+'''python
+import operator
+from functools import reduce
+'''
 
 ## INPUT:
 1. Input.gmt
