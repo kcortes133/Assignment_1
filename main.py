@@ -7,7 +7,7 @@
 import operator
 from functools import reduce
 
-#
+
 # assumptions:
 #   input is tab delimited
 #   first two indices in line should be thrown away
@@ -124,9 +124,9 @@ def main():
     stringFile = 'STRING.txt'
     fileIn = 'Input.gmt.txt'
     genes = readInput(fileIn)
-    #interactionsNetwork = makeInteractionNetwork(stringFile)
-    #geneInteractions = makeNetwork(genes, interactionsNetwork)
-    #makeNetworkSIF(geneInteractions, 'outSIFTest.txt')
+    interactionsNetwork = makeInteractionNetwork(stringFile)
+    geneInteractions = makeNetwork(genes, interactionsNetwork)
+    makeNetworkSIF(geneInteractions, 'outSIF.txt')
 
 
 

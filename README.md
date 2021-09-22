@@ -10,7 +10,6 @@ output network is all the genes from the Input GMT file using the STRING file to
 file can be loaded into Cytoscape as a network.
 
 ## INSTALL:
-numpy~=1.21.1
 operator
 reduce from functools
 
@@ -19,7 +18,7 @@ python 3.9.5
 
 ## INPUT:
 1. Input.gmt
-- 12 disjoint gene sets
+- disjoint gene sets
 - tab-delimited file Input.gmt
 - format: (https://software.broadinstitute.org/cancer/software/gsea/wiki/index.php/Data_formats/)
 2. STRING.txt
@@ -36,22 +35,3 @@ Display the functional network among Fanconi Anemia genes using Cytoscape
 - Simple Interaction File (SIF) Cytoscape format
 - read in Cytoscape for network visualization
 - format: (https://software.broadinstitute.org/cancer/software/gsea/wiki/index.php/Data_formats/).
-
-
-# WRITEUP:
-
-## Motivating Problem from Domain:
-// TODO
-
-## Computational Problem Formulation:
-//TODO
-
-## Specific Approach to the Problem (i.e choice of algorithm):
-//TODO
-
-## Specific Implementation of Approach:
-//TODO
-
-
-
-
