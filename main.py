@@ -6,6 +6,7 @@
 
 import operator
 from functools import reduce
+import numpy as np
 
 
 # assumptions:
@@ -70,13 +71,13 @@ def makeInteractionNetwork(stringFile):
     return interactions
 
 
+
 #   @param   genes list of genes to check interactions for (gotten from readInput(file))
 #   @param   interactionsNetwork dict of protein-protein interactions from makeInteractionNetwork(stringFile)
 #   @returns geneInteractions dict of gene interactions from input GMT file
 def makeNetwork(genes, interactionsNetwork):
     geneInteractions = {}
-    genesTemp = list(genes)
-    for gene1 in genesTemp:
+    for gene1 in genes:
         # input gene1 check if connected to any other gene
         geneInteractions[gene1] = {}
         for gene2 in genes:
@@ -89,13 +90,10 @@ def makeNetwork(genes, interactionsNetwork):
     return geneInteractions
 
 
-# Assumptions:
-#
 # Limitations:
 #   large gene interaction dictionaries will take a long time to process
 #   SIF files dont give weight information beyone naming them with string
 #
-
 #   @param   geneInteractions dictionary of gene interactions generated from makeNetwork()
 #   @param   outF string file name to write gene interactions dictionary to
 #   @returns nothing
@@ -114,19 +112,24 @@ def makeNetworkSIF(geneInteractions, outF):
             for interaction in geneInteractions[gene]:
                 weight = geneInteractions[gene][interaction]
                 sifFile.write(gene + '\t' + weight +'\t' + interaction + '\n')
-
     sifFile.close()
-
     return
 
 
 def main():
+    # define input files
     stringFile = 'STRING.txt'
     fileIn = 'Input.gmt.txt'
+    # define output file
+    outFile = 'outSIF.txt'
+    # get genes from GMT file
     genes = readInput(fileIn)
+    # get interactions from STRING file
     interactionsNetwork = makeInteractionNetwork(stringFile)
+    # make subnetwork of input genes with interactions from STRING file
     geneInteractions = makeNetwork(genes, interactionsNetwork)
-    makeNetworkSIF(geneInteractions, 'outSIF.txt')
+    # write subnetwork to file
+    makeNetworkSIF(geneInteractions, outFile)
 
 
 
