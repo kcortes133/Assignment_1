@@ -6,7 +6,6 @@
 
 import operator
 from functools import reduce
-import numpy as np
 
 
 # assumptions:
