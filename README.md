@@ -20,8 +20,23 @@ python 3.9.5
 ```python
 import operator
 from functools import reduce
+from main import *
 
-main()
+
+# define input files
+stringFile = 'STRING.txt'
+fileIn = 'Input.gmt.txt'
+# define output file
+outFile = 'outSIF.txt'
+# get genes from GMT file
+genes = readInput(fileIn)
+# get interactions from STRING file
+interactionsNetwork = makeInteractionNetwork(stringFile)
+# make subnetwork of input genes with interactions from STRING file
+geneInteractions = makeNetwork(genes, interactionsNetwork)
+# write subnetwork to file
+makeNetworkSIF(geneInteractions, outFile)
+
 ```
 
 ## INPUT:

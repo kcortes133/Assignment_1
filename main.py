@@ -35,8 +35,9 @@ def readInput(fileIn):
 
     # Delete first two columns
     for g in genes:
-        del g[0]
-        del g[0]
+        if len(g) > 1:
+            del g[0]
+            del g[0]
 
     # condense list of lists into one-dimensional list
     genes = reduce(operator.add, genes)

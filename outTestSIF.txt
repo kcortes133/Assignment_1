@@ -1,0 +1,6 @@
+Gene1	weight	Gene2
+NUPR1
+CD19
+SH2B1
+LCMT1
+BDNF

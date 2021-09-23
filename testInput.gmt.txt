@@ -1,0 +1,3 @@
+Fanconi anemia locus 0	Locus for PALB2	NUPR1	CD19	SH2B1	LCMT1
+Fanconi anemia locus 1	Locus for FANCF	NUPR1	CD19	SH2B1	BDNF
+
